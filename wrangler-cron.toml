@@ -1,0 +1,32 @@
+# Cloudflare Workers Cron Configuration for Background Monitoring
+name = "semantic-change-alert-cron"
+main = "server/worker-cron.ts"
+compatibility_date = "2025-09-15"
+compatibility_flags = ["nodejs_compat"]
+
+# Cron triggers for automated watcher checks
+# Syntax: minute hour day month day-of-week
+[triggers]
+crons = [
+  "*/15 * * * *",  # Every 15 minutes - for hourly watchers
+  "0 * * * *",     # Every hour - for hourly watchers  
+  "0 0 * * *",     # Daily at midnight UTC - for daily watchers
+  "0 0 * * 1"      # Weekly on Monday - for weekly watchers
+]
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+
+# Hyperdrive for PostgreSQL connection pooling
+# [[hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "your-hyperdrive-id-here"
+
+# Production environment
+[env.production]
+name = "sca-cron-prod"
+
+# Staging environment
+[env.staging]
+name = "sca-cron-staging"

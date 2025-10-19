@@ -1,0 +1,49 @@
+name = "semantic-change-alert-api"
+main = "server/worker-cloudflare.ts"
+compatibility_date = "2025-09-15"
+compatibility_flags = ["nodejs_compat"]
+
+# Cron triggers for scheduled monitoring
+[triggers]
+crons = ["*/30 * * * *"]
+
+[env.production]
+name = "sca-api-prod"
+
+[env.staging]
+name = "sca-api-staging"
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+
+# Hyperdrive for PostgreSQL connection pooling (RECOMMENDED)
+# Create Hyperdrive config first: wrangler hyperdrive create <NAME> --connection-string="postgresql://..."
+# Then uncomment and add your Hyperdrive ID below
+# [[hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "your-hyperdrive-id-here"
+
+# For production environment
+# [[env.production.hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "your-production-hyperdrive-id"
+
+# For staging environment  
+# [[env.staging.hyperdrive]]
+# binding = "HYPERDRIVE"
+# id = "your-staging-hyperdrive-id"
+
+# Build configuration (optional - TypeScript files work directly)
+# [build]
+# command = "npm run build:worker"
+
+# KV namespaces for caching (optional)
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "your-kv-namespace-id"
+
+# R2 for file storage (if you add screenshot support later)
+# [[r2_buckets]]
+# binding = "SCREENSHOTS"
+# bucket_name = "sca-screenshots"
