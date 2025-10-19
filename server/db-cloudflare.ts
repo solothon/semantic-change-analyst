@@ -11,22 +11,19 @@ const poolInstances = new Map<string, Pool>();
 const storageInstances = new Map<string, DatabaseStorage>();
 
 export function getDatabase(env: Env): DatabaseInstance {
-  // Support both Xata and Neon connections
-  // Xata PostgreSQL endpoint: postgresql://[workspace]:[api-key]@[region].sql.xata.sh/[database]:[branch]
-  const connectionString = env.HYPERDRIVE?.connectionString || env.DATABASE_URL || env.XATA_DATABASE_URL;
+  // Support Aiven, Neon, Xata, or Hyperdrive
+  const connectionString = env.HYPERDRIVE?.connectionString || env.DATABASE_URL || env.AIVEN_DATABASE_URL;
   
   if (!connectionString) {
-    throw new Error('DATABASE_URL, XATA_DATABASE_URL, or HYPERDRIVE connection not configured');
+    throw new Error('DATABASE_URL, AIVEN_DATABASE_URL, or HYPERDRIVE connection not configured');
   }
 
   if (dbInstances.has(connectionString)) {
     return dbInstances.get(connectionString)!;
   }
 
-  // Enable connection caching for better performance
   neonConfig.fetchConnectionCache = true;
 
-  // Xata and Neon both use PostgreSQL wire protocol
   const pool = new Pool({
     connectionString,
   });
@@ -40,10 +37,10 @@ export function getDatabase(env: Env): DatabaseInstance {
 }
 
 export function getStorage(env: Env): DatabaseStorage {
-  const connectionString = env.HYPERDRIVE?.connectionString || env.DATABASE_URL || env.XATA_DATABASE_URL;
+  const connectionString = env.HYPERDRIVE?.connectionString || env.DATABASE_URL || env.AIVEN_DATABASE_URL;
   
   if (!connectionString) {
-    throw new Error('DATABASE_URL, XATA_DATABASE_URL, or HYPERDRIVE connection not configured');
+    throw new Error('DATABASE_URL, AIVEN_DATABASE_URL, or HYPERDRIVE connection not configured');
   }
 
   if (storageInstances.has(connectionString)) {
@@ -58,7 +55,7 @@ export function getStorage(env: Env): DatabaseStorage {
 }
 
 export async function closeConnection(env: Env) {
-  const connectionString = env.HYPERDRIVE?.connectionString || env.DATABASE_URL || env.XATA_DATABASE_URL;
+  const connectionString = env.HYPERDRIVE?.connectionString || env.DATABASE_URL || env.AIVEN_DATABASE_URL;
   
   const pool = poolInstances.get(connectionString);
   if (pool) {
